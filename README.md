@@ -1,0 +1,2 @@
+# GrabIOCs
+支持信誉值和IOCs类别过滤的python版IOCs接口调用脚本
