@@ -1,8 +1,8 @@
 {
-    "Appkey":"",
-    "Appsecert":"",
-    "Token":"",
+    "Appkey":"24634166",
+    "Appsecert":"70b28ca6b625ecd3acf563f51690f4e1",
+    "Token":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx",
     "SetName":"",
     "ScoreLevel":0.0,
-    "Useless":[""]
+    "Useless":[]
 }

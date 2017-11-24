@@ -31,9 +31,9 @@ with io.open("config","r",encoding="utf8") as f:
     SCORELEVEL = j[u"ScoreLevel"]
     
     if len(APPKEY) and len(APPSECRET) and len(TOKEN):
-        print("从config文件中读取参数成功")
+        print(u"从config文件中读取参数成功")
     else:
-        print("config文件中必要参数缺失！")
+        print(u"config文件中必要参数缺失！")
         exit(0)
 
 # 判断文件位置是否存在，若不存在则创建,用于存放下载下来的数据
@@ -77,7 +77,7 @@ def main():
         j=json.loads(res)
     except ValueError:
         print(res)
-        print("API请求失败，请检查config参数")
+        print(u"API请求失败，请检查config参数")
         return 0
     
     # print(len(j["response_data"][0]['labels']))
