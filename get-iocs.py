@@ -68,6 +68,8 @@ def main():
     bodyMap["date"] = DATE
     bodyMap["page"] = PAGENUM
     # bodyMap["type"] = "indicator"
+    # bodyMap["qurey"] = "reports"
+    
     
     req_post.set_body(bodyMap)
     req_post.set_content_type(constant.CONTENT_TYPE_FORM)
@@ -79,6 +81,11 @@ def main():
         print(res)
         print(u"API请求失败，请检查config参数")
         return 0
+    except Exception as e:
+        print(res)
+        raise
+        return 0
+
     
     # print(len(j["response_data"][0]['labels']))
 
