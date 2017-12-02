@@ -1,5 +1,6 @@
 import httplib
 import urllib
+import ssl
 
 from com.aliyun.api.gateway.sdk.common import constant
 from com.aliyun.api.gateway.sdk.http.request import Request
@@ -85,7 +86,7 @@ class Response(Request):
             self.__port = 443
             self.__connection = httplib.HTTPSConnection(self.parse_host(), self.__port,
                                                         cert_file=self.__cert_file,
-                                                        key_file=self.__key_file)
+                                                        key_file=self.__key_file, context=ssl._create_unverified_context())
             
             
             self.__connection.connect()
@@ -109,7 +110,7 @@ class Response(Request):
         try:
             self.__port = 443
             self.__connection = httplib.HTTPSConnection(self.get_host(), self.__port, cert_file=self.__cert_file,
-                                                        key_file=self.__key_file)
+                                                        key_file=self.__key_file, context=ssl._create_unverified_context())
             self.__connection.connect()
             self.__connection.request(method=self.get_method(), url=self.get_url(), body=self.get_body(),
                                       headers=self.get_headers())
