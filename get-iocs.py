@@ -118,7 +118,7 @@ def json_csv(data,filename):
             row['category'] = row['category'][0]
             
             if row['category'] not in USELESS:          # 排除部分IOC类别
-                if float(row.get('score',0.0)) > SCORELEVEL:    # 信誉值过滤
+                if float(row.get('score',0.1)) > SCORELEVEL:    # 信誉值过滤
                     dw.writerow(row)
                         
             # # 去除过长的value
