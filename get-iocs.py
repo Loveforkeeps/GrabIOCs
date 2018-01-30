@@ -100,7 +100,8 @@ def main():
             main()
         else:
             print(u"That's All!")
-    except:
+    except Exception as e:
+        print e
         print(j)
         return 0
 
