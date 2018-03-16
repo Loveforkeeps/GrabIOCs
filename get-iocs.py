@@ -43,8 +43,6 @@ if not os.path.exists(domainpath):
     os.makedirs(domainpath)
     print(domainpath + ' has been created!')
 
-# 设定存放iocs的csv文件名及相对路径
-IOCS_CSVNAME = "archive/IOCS_"+datestamp+".csv"
 
 # 指定获取的页数，日期（默认为执行时间）
 PAGENUM = ""
@@ -54,7 +52,11 @@ else:
     PAGENUM = "1"
 
 if not DATE:
-    DATE = time.strftime("%Y-%m-%d",time.localtime(time.time()))
+    DATE = datestamp
+
+
+# 设定存放iocs的csv文件名及相对路径
+IOCS_CSVNAME = "archive/IOCS_"+DATE+".csv"
 
 # 设置ALI云API请求参数
 host = "https://apiiocs.sec-un.com"
