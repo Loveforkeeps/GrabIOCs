@@ -4,5 +4,6 @@
     "Token":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx",
     "SetName":"",
     "ScoreLevel":0.0,
-    "Useless":[]
+    "Useless":[],
+    "Date":""
 }

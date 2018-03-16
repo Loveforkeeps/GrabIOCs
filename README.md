@@ -11,6 +11,7 @@
         * Token: 订阅集合的Token值
         * SetName: 订阅集合名(可为空)
         * ScoreLevel: 数据类型为浮点型(必须带小数点)，信誉值下限默认默认为0.0
+        * Date: 指定日期的IOCs数据，可不填写，默认为当天
         * Useless: 数据类型为字符串数组，将不需要的类别填入即可    
         `IOCs类别:"spam", "scanner", "proxy", "c2", "phishing", "porn", "tor","gambling", "category", "dga", "trojan", "malware", "ransomware"`   
         `PS：其中"trojan","malware","ransomware"是没有信誉值的类（value值为hash值），进行判定时默认为0`
@@ -22,7 +23,8 @@
         "Token":"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
         "SetName":"test",
         "ScoreLevel":0.0,
-        "Useless":["trojan","malware","ransomware"]
+        "Useless":["trojan","malware","ransomware"],
+        "Date":"2018-03-08"
     }
     ```
 * get-iocs.py

@@ -29,6 +29,7 @@ with io.open("config","r",encoding="utf8") as f:
     TOKEN = str(j[u"Token"])
     USELESS = j[u"Useless"]  #需要去除的iocs类别队列
     SCORELEVEL = j[u"ScoreLevel"]
+    DATE = str(j[u"Date"])
     
     if len(APPKEY) and len(APPSECRET) and len(TOKEN):
         print(u"从config文件中读取参数成功")
@@ -51,7 +52,9 @@ if len(sys.argv) == 2:
     PAGENUM = sys.argv[1]
 else:
     PAGENUM = "1"
-DATE = time.strftime("%Y-%m-%d",time.localtime(time.time()))
+
+if not DATE:
+    DATE = time.strftime("%Y-%m-%d",time.localtime(time.time()))
 
 # 设置ALI云API请求参数
 host = "https://apiiocs.sec-un.com"
