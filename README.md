@@ -1,6 +1,6 @@
-# GrabIOCs Python 说明    
+#  RedQueen API2.0 Python 说明    
 ## 介绍   
-支持`信誉值`和`类别过滤`的IOCs接口调用脚本
+RedQueen API2.0 Python版客户端（初版）
 
 ## 使用说明：
 * config
@@ -10,21 +10,13 @@
         * Appsecert: 请求凭证
         * Token: 订阅集合的Token值
         * SetName: 订阅集合名(可为空)
-        * ScoreLevel: 数据类型为浮点型(必须带小数点)，信誉值下限默认默认为0.0
-        * Date: 指定日期的IOCs数据，可不填写，默认为当天
-        * Useless: 数据类型为字符串数组，将不需要的类别填入即可    
-        `IOCs类别:"spam", "scanner", "proxy", "c2", "phishing", "porn", "tor","gambling", "category", "dga", "trojan", "malware", "ransomware"`   
-        `PS：其中"trojan","malware","ransomware"是没有信誉值的类（value值为hash值），进行判定时默认为0`
     * 配置示例：
     ```json
     {
         "Appkey":"xxxxxx",
         "Appsecert":"xxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "Token":"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
-        "SetName":"test",
-        "ScoreLevel":0.0,
-        "Useless":["trojan","malware","ransomware"],
-        "Date":"2018-03-08"
+        "SetName":"test"
     }
     ```
 * get-iocs.py
