@@ -119,22 +119,21 @@ def main():
 
 # 将iocs的JSON数据转换为CSV
 def json_csv(data,filename):
-    global SCORELEVEL
+    # global SCORELEVEL
     with open(filename, 'a') as f:
         dw = csv.DictWriter(f, [u'category', u'score', u'geo', u'value', u'geo', u'type', u'source_ref', u'tag', u'timestamp'])
         if PAGENUM == "1":
             dw.writeheader()
         # dw.writeheader()
-       
         for row in data:
             # print(row)
             row.update(row['reputation'][0])
             row.pop('reputation')
             # print(row)
             dw.writerow(row)
-            if row['category'] not in USELESS :          # 排除部分IOC类别
-                if float(row.get('score',0.1)) > SCORELEVEL:    # 信誉值过滤
-                    dw.writerow(row)
+            # if row['category'] not in USELESS :          # 排除部分IOC类别
+            #     if float(row.get('score',0.1)) > SCORELEVEL:    # 信誉值过滤
+            #         dw.writerow(row)
             # # 去除过长的value
             # if row['category'] not in useless and len(row['value']) < 45:
             #     dw.writerow(row)
