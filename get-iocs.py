@@ -12,8 +12,8 @@ import os
 import csv
 
 # 获取时间戳
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-print(timestamp)
+timestamp1 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+print(timestamp1)
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -32,6 +32,7 @@ with io.open("config","r",encoding="utf8") as f:
         APPKEY = str(j[u"Appkey"])
         APPSECRET = str(j[u"Appsecert"])
         TOKEN = str(j[u"Token"])
+        TYPE = ",".join(j[u"Type"])
         # USELESS = j[u"Useless"]  #需要去除的iocs类别队列
         # SCORELEVEL = j[u"ScoreLevel"]
         if len(APPKEY) and len(APPSECRET) and len(TOKEN):
@@ -76,10 +77,10 @@ def main():
     global PAGENUM
     bodyMap["token"] = TOKEN
     bodyMap["page"] = PAGENUM
-    # bodyMap["type"] = "indicator"
+    bodyMap["type"] = TYPE
+    # bodyMap["limit"]
     # bodyMap["qurey"] = "reports"
     # bodyMap["score_from"] = SCORELEVEL
-    
     
     req_post.set_body(bodyMap)
     req_post.set_content_type(constant.CONTENT_TYPE_FORM)
@@ -89,22 +90,21 @@ def main():
     try:
         j=json.loads(res)
     except ValueError:
-        print(res)
+        print("Response: {}".format(res))
+        print("Header: {}".format(res.header))
         print(u"API请求失败，请检查config参数")
         return 0
     except Exception as e:
-        print(res)
+        print("Response: {}".format(res))
         raise
         return 0
 
-    
     # print(len(j["response_data"][0]['labels']))
 
     json_csv(j["response_data"][0]['labels'],IOCS_CSVNAME)
 
     try:
         nextpage = j["nextpage"]
-
         if not nextpage == "":
             PAGENUM = nextpage
             print(u"Next Page is "+nextpage)
@@ -112,8 +112,9 @@ def main():
         else:
             print(u"That's All!")
     except Exception as e:
-        print e
-        print(j)
+        with open("erro.log","w") as f:
+            f.write(res)
+        print(e)
         return 0
 
 
@@ -137,9 +138,11 @@ def json_csv(data,filename):
             # # 去除过长的value
             # if row['category'] not in useless and len(row['value']) < 45:
             #     dw.writerow(row)
+    return 0
 
 if __name__ == '__main__':
     main()
     # 获取时间戳
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     print(timestamp)
