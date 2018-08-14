@@ -90,9 +90,14 @@ def main():
     try:
         j=json.loads(res)
     except ValueError:
-        print("Response: {}".format(res))
-        print("Header: {}".format(res.header))
-        print(u"API请求失败，请检查config参数")
+        if len(res):
+            print("Response: {}".format(res))
+        # print("Header: {}".format(res.header))
+            print(u"API请求失败，请检查config参数")
+        else:
+            print("Response: {}".format(res))
+            print(u"无返回结果，再次尝试")
+            main()
         return 0
     except Exception as e:
         print("Response: {}".format(res))

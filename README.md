@@ -20,12 +20,14 @@ RedQueen API2.0 Python版客户端（初版）
         "SetName":"test"
     }
     ```
+    
 * get-iocs.py
     * 逐页获取IOCs数据，保存在archive文件夹中
     * 支持断页续传,当从某页中断时，可将下页页码，作为参数，继续下载，最后获得的文件依旧完整
     * 一次IOCs数据同步约耗时40min
 
     * 使用示例：
+    
     ```shell
     python get-iocs.py
     输出：
@@ -40,8 +42,9 @@ RedQueen API2.0 Python版客户端（初版）
     Next Page is 211
     Next Page is 212
     That's All!
+    ```
 
-
+	```
     python get-iocs.py 134
     输出：
     从config文件中读取参数成功
@@ -53,6 +56,6 @@ RedQueen API2.0 Python版客户端（初版）
     Next Page is 211
     Next Page is 212
     That's All!
-
+    
     ```
 
