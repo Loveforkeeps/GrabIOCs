@@ -16,7 +16,7 @@ RedQueen API2.0 Python版客户端（初版）
         "Appkey":"xxxxxx",
         "Appsecert":"xxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "Token":"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxx",
-        "Type":["feed_url","feed_ipv4"]
+        "Type":["feed_url","feed_ipv4"],
         "SetName":"test"
     }
     ```
