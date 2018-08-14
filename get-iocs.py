@@ -24,8 +24,16 @@ datestamp = time.strftime("%Y-%m-%d",time.localtime(time.time()))
 path = os.path.split(os.path.realpath(__file__))[0] + '/'
 os.chdir(path)
 
-# 从config中获取参数
+# 时间装饰器
+def functime(func):
+    def wap(*args,**kw):
+       local_time = datetime.datetime.now()
+       func(*args, **kw)
+       times = (datetime.datetime.now() - local_time).seconds
+       print 'Run time is {} minutes {} seconds'.format(times/60,times%60)
+    return wap
 
+# 从config中获取参数
 with io.open("config","r",encoding="utf8") as f:
     try:
         j = json.load(f)
@@ -43,9 +51,6 @@ with io.open("config","r",encoding="utf8") as f:
     except:
         print(u"config文件中参数异常！")
         exit(0)
-
-    
-
 
 # 判断文件位置是否存在，若不存在则创建,用于存放下载下来的数据
 domainpath = 'archive'
@@ -72,59 +77,15 @@ cli = client.DefaultClient(app_key=APPKEY, app_secret=APPSECRET)
 req_post = request.Request(host=host, protocol=constant.HTTPS, url=url, method="POST", time_out=120)
 
 bodyMap={}
-
-def main():
-    global PAGENUM
-    bodyMap["token"] = TOKEN
-    bodyMap["page"] = PAGENUM
-    bodyMap["type"] = TYPE
-    # bodyMap["limit"]
-    # bodyMap["qurey"] = "reports"
-    # bodyMap["score_from"] = SCORELEVEL
-    
-    req_post.set_body(bodyMap)
-    req_post.set_content_type(constant.CONTENT_TYPE_FORM)
-    res = cli.execute(req_post)
-    # with open(PAGENUM+".json","w") as f:
-    #     f.write(res)
-    try:
-        j=json.loads(res)
-    except ValueError:
-        if len(res):
-            print("Response: {}".format(res))
-        # print("Header: {}".format(res.header))
-            print(u"API请求失败，请检查config参数")
-        else:
-            print("Response: {}".format(res))
-            print(u"无返回结果，再次尝试")
-            main()
-        return 0
-    except Exception as e:
-        print("Response: {}".format(res))
-        raise
-        return 0
-
-    # print(len(j["response_data"][0]['labels']))
-
-    json_csv(j["response_data"][0]['labels'],IOCS_CSVNAME)
-
-    try:
-        nextpage = j["nextpage"]
-        if not nextpage == "":
-            PAGENUM = nextpage
-            print(u"Next Page is "+nextpage)
-            main()
-        else:
-            print(u"That's All!")
-    except Exception as e:
-        with open("erro.log","w") as f:
-            f.write(res)
-        print(e)
-        return 0
+bodyMap["token"] = TOKEN
+bodyMap["type"] = TYPE
+# bodyMap["limit"]
+# bodyMap["qurey"] = "reports"
+# bodyMap["score_from"] = SCORELEVEL
 
 
-# 将iocs的JSON数据转换为CSV
 def json_csv(data,filename):
+    """  将iocs的JSON数据转换为CSV """
     # global SCORELEVEL
     with open(filename, 'a') as f:
         dw = csv.DictWriter(f, [u'category', u'score', u'geo', u'value', u'geo', u'type', u'source_ref', u'tag', u'timestamp'])
@@ -145,9 +106,48 @@ def json_csv(data,filename):
             #     dw.writerow(row)
     return 0
 
+def apires(page):
+    bodyMap["page"] = page
+    req_post.set_body(bodyMap)
+    req_post.set_content_type(constant.CONTENT_TYPE_FORM)
+    res = cli.execute(req_post)
+    try:
+        j=json.loads(res)
+    except ValueError:
+        if len(res):
+            print("Response: {}".format(res))
+        # print("Header: {}".format(res.header))
+            print(u"API请求失败，请检查config参数")
+        else:
+            print("Response: {}".format(res))
+            print(u"无返回结果，再次尝试")
+            apires(page)
+        return 0
+    except Exception as e:
+        print("Response: {}".format(res))
+        raise
+        return 0
+    json_csv(j["response_data"][0]['labels'],IOCS_CSVNAME)
+    return j["nextpage"]
+    
+@functime
+def main():
+    global PAGENUM
+    try:
+        nextpage = apires(PAGENUM)
+        while not nextpage == "":
+            PAGENUM = nextpage
+            print(u"Next Page is "+nextpage)
+            nextpage = apires(PAGENUM)
+        else:
+            print(u"That's All!")
+    except Exception as e:
+        with open("erro.log","w") as f:
+            f.write(res)
+        print(e)
+        return 0
+    except KeyboardInterrupt:
+        print("\nUser Termined!")
+
 if __name__ == '__main__':
     main()
-    # 获取时间戳
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    print(timestamp)
