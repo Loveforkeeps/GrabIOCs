@@ -88,7 +88,7 @@ def json_csv(data,filename):
     """  将iocs的JSON数据转换为CSV """
     # global SCORELEVEL
     with open(filename, 'a') as f:
-        dw = csv.DictWriter(f, [u'category', u'score', u'geo', u'value', u'geo', u'type', u'source_ref', u'tag', u'timestamp'])
+        dw = csv.DictWriter(f, [u'category', u'score', u'geo', u'value', u'type', u'source_ref', u'tag', u'timestamp'])
         if PAGENUM == "1":
             dw.writeheader()
         # dw.writeheader()
