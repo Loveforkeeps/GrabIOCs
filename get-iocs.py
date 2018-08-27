@@ -142,8 +142,6 @@ def main():
         else:
             print(u"That's All!")
     except Exception as e:
-        with open("erro.log","w") as f:
-            f.write(res)
         print(e)
         return 0
     except KeyboardInterrupt:
