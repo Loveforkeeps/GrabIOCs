@@ -116,7 +116,6 @@ def apires(page):
         else:
             print("Response: {}".format(res))
             print(u"无返回结果，再次尝试")
-            apires(page)
         return 0
     except Exception as e:
         print("Response: {}".format(res))
@@ -133,7 +132,11 @@ def main():
         while not nextpage == "":
             PAGENUM = nextpage
             print(u"Next Page is "+nextpage)
-            nextpage = apires(PAGENUM)
+            ret = apires(PAGENUM)
+            if ret:
+                nextpage = ret
+            else:
+                nextpage = PAGENUM
         else:
             print(u"That's All!")
     except Exception as e:
