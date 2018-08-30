@@ -9,6 +9,7 @@ RedQueen API2.0 Python版客户端（初版）
         * Appkey: 请求凭证
         * Appsecert: 请求凭证
         * Token: 订阅集合的Token值
+        * Type：制定需要获取的IOC类型
         * SetName: 订阅集合名(可为空)
         * ScoreLevel：信誉值下限
     * 配置示例：
