@@ -133,7 +133,7 @@ def main():
             PAGENUM = nextpage
             print(u"Next Page is "+nextpage)
             ret = apires(PAGENUM)
-            if ret:
+            if ret != 0:
                 nextpage = ret
             else:
                 nextpage = PAGENUM
