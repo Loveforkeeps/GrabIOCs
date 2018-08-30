@@ -41,8 +41,8 @@ with io.open("config","r",encoding="utf8") as f:
         APPSECRET = str(j[u"Appsecert"])
         TOKEN = str(j[u"Token"])
         TYPE = ",".join(j[u"Type"])
+        SCORELEVEL = j[u"ScoreLevel"]
         # USELESS = j[u"Useless"]  #需要去除的iocs类别队列
-        # SCORELEVEL = j[u"ScoreLevel"]
         if len(APPKEY) and len(APPSECRET) and len(TOKEN):
             print(u"从config文件中读取参数成功")
         else:
@@ -79,9 +79,10 @@ req_post = request.Request(host=host, protocol=constant.HTTPS, url=url, method="
 bodyMap={}
 bodyMap["token"] = TOKEN
 bodyMap["type"] = TYPE
+bodyMap["score_from"] = SCORELEVEL
 # bodyMap["limit"]
 # bodyMap["qurey"] = "reports"
-# bodyMap["score_from"] = SCORELEVEL
+
 
 
 def json_csv(data,filename):
@@ -98,12 +99,6 @@ def json_csv(data,filename):
             row.pop('reputation')
             # print(row)
             dw.writerow(row)
-            # if row['category'] not in USELESS :          # 排除部分IOC类别
-            #     if float(row.get('score',0.1)) > SCORELEVEL:    # 信誉值过滤
-            #         dw.writerow(row)
-            # # 去除过长的value
-            # if row['category'] not in useless and len(row['value']) < 45:
-            #     dw.writerow(row)
     return 0
 
 def apires(page):
