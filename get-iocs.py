@@ -45,8 +45,8 @@ with io.open("config","r",encoding="utf8") as f:
 
         if len(APPKEY) and len(APPSECRET) and len(TOKEN):
             print(u"--- 从config文件中读取参数成功 ---")
-            print("IOCs类型:{}".format(TYPE))
-            print("分值下限:{}".format(SCORELEVEL))
+            print(u"IOCs类型:{}".format(TYPE))
+            print(u"分值下限:{}".format(SCORELEVEL))
         else:
             print(u"config文件中必要参数缺失！")
             exit(0)
@@ -116,12 +116,13 @@ def apires(page):
             print("Response: {}".format(res))
         # print("Header: {}".format(res.header))
             print(u"API请求失败，请检查config参数")
+            sys.exit(0)
         else:
             print("云端无响应")
         return 0
     except Exception as e:
-        print("请求数据异常:{}".format(e))
-        print("Response: {}".format(res))
+        print(u"请求数据异常:{}".format(e))
+        print(u"Response: {}".format(res))
         raise
         return 0
     json_csv(j["response_data"][0]['labels'],IOCS_CSVNAME)
@@ -129,21 +130,28 @@ def apires(page):
     
 @functime
 def main():
+    retry = 50
     global PAGENUM
+    print(u"--- 开始获取IOCs ---")
     try:
         nextpage = apires(PAGENUM)
-        while not nextpage == 0:
+        while nextpage != 0 and retry > 0:
             PAGENUM = nextpage
             print(u"Next Page is {}".format(nextpage))
             nextpage = apires(PAGENUM)
             if nextpage == 0:
-                print(u"无返回结果，再次尝试")
+                print(u"无响应，5秒后再次尝试")
+                time.sleep(5)
                 nextpage = PAGENUM
+                retry = retry - 1
         else:
             if nextpage == "":
                 print(u"That's All!")
             else:
-                print(u"如果重试多次仍出现这样的提示，请联系support@tj-un.com解决")
+                if retry == 0:
+                    print(u"{}次重试耗尽，任务被迫结束".format(retry))
+                else:
+                    print(u"如果重试多次仍出现这样的提示，请联系support@tj-un.com解决")
     except Exception as e:
         print(e)
         return 0
