@@ -106,6 +106,7 @@ def apires(page):
     req_post.set_body(bodyMap)
     req_post.set_content_type(constant.CONTENT_TYPE_FORM)
     res = cli.execute(req_post)
+
     try:
         j=json.loads(res)
     except ValueError:
@@ -114,10 +115,10 @@ def apires(page):
         # print("Header: {}".format(res.header))
             print(u"API请求失败，请检查config参数")
         else:
-            print("Response: {}".format(res))
-            print(u"无返回结果，再次尝试")
+            print("云端无响应")
         return 0
     except Exception as e:
+        print("请求数据异常:{}".format(e))
         print("Response: {}".format(res))
         raise
         return 0
@@ -129,16 +130,18 @@ def main():
     global PAGENUM
     try:
         nextpage = apires(PAGENUM)
-        while not nextpage == "":
+        while not nextpage == 0:
             PAGENUM = nextpage
-            print(u"Next Page is "+nextpage)
-            ret = apires(PAGENUM)
-            if ret != 0:
-                nextpage = ret
-            else:
+            print(u"Next Page is {}".format(nextpage))
+            nextpage = apires(PAGENUM)
+            if nextpage == 0:
+                print(u"无返回结果，再次尝试")
                 nextpage = PAGENUM
         else:
-            print(u"That's All!")
+            if nextpage == "":
+                print(u"That's All!")
+            else:
+                print(u"如果重试多次仍出现这样的提示，请联系support@tj-un.com解决")
     except Exception as e:
         print(e)
         return 0
