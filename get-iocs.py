@@ -42,9 +42,11 @@ with io.open("config","r",encoding="utf8") as f:
         TOKEN = str(j[u"Token"])
         TYPE = ",".join(j[u"Type"])
         SCORELEVEL = j[u"ScoreLevel"]
-        # USELESS = j[u"Useless"]  #需要去除的iocs类别队列
+
         if len(APPKEY) and len(APPSECRET) and len(TOKEN):
-            print(u"从config文件中读取参数成功")
+            print(u"--- 从config文件中读取参数成功 ---")
+            print("IOCs类型:{}".format(TYPE))
+            print("分值下限:{}".format(SCORELEVEL))
         else:
             print(u"config文件中必要参数缺失！")
             exit(0)
