@@ -135,7 +135,7 @@ def main():
     print(u"--- 开始获取IOCs ---")
     try:
         nextpage = apires(PAGENUM)
-        while nextpage != 0 and retry > 0:
+        while nextpage and retry > 0:
             PAGENUM = nextpage
             print(u"Next Page is {}".format(nextpage))
             nextpage = apires(PAGENUM)
