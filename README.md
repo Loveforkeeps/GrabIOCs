@@ -10,6 +10,7 @@ RedQueen API2.0 Python版客户端（初版）
         * Appsecert: 请求凭证
         * Token: 订阅集合的Token值
         * Type：制定需要获取的IOC类型
+          * 可选类型：feed_ipv4,feed_domain,feed_url,feed_hash-md5,feed_hash-sha1,feed_hash-sha256,feed_email 
         * SetName: 订阅集合名(可为空)
         * ScoreLevel：信誉值下限
     * 配置示例：
