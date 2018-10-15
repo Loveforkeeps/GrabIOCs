@@ -123,7 +123,7 @@ def apires(page):
     except Exception as e:
         print(u"请求数据异常:{}".format(e))
         print(u"Response: {}".format(res))
-        raise
+        #raise
         return 0
     json_csv(j["response_data"][0]['labels'],IOCS_CSVNAME)
     return j["nextpage"]
