@@ -63,3 +63,8 @@ RedQueen API2.0 Python版客户端（初版）
     
     ```
 
+
+
+#### ToDo:
+
+2019-04-26: 修改com.aliyun.api.gateway.sdk.client.DefaultClient.execute()，增加状态码检测，获取Header中的错误信息返回
