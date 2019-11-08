@@ -10,12 +10,20 @@ import time
 import io
 import os
 import csv
+import importlib
+
+# Python版本识别
+if sys.version > '3':
+    PY3 = True
+else:
+    PY3 = False
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
 # 获取时间戳
 timestamp1 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 print(timestamp1)
-reload(sys)
-sys.setdefaultencoding('utf-8')
+
 
 # 获取系统日期
 datestamp = time.strftime("%Y-%m-%d",time.localtime(time.time()))
@@ -30,35 +38,35 @@ def functime(func):
        local_time = datetime.datetime.now()
        func(*args, **kw)
        times = (datetime.datetime.now() - local_time).seconds
-       print 'Run time is {} minutes {} seconds'.format(times/60,times%60)
+       print('Run time is {} minutes {} seconds'.format(times/60,times%60))
     return wap
 
 # 从config中获取参数
 with io.open("config","r",encoding="utf8") as f:
     try:
         j = json.load(f)
-        APPKEY = str(j[u"Appkey"])
-        APPSECRET = str(j[u"Appsecert"])
-        TOKEN = str(j[u"Token"])
-        TYPE = ",".join(j[u"Type"])
-        SCORELEVEL = j[u"ScoreLevel"]
+        APPKEY = str(j["Appkey"])
+        APPSECRET = str(j["Appsecert"])
+        TOKEN = str(j["Token"])
+        TYPE = ",".join(j["Type"])
+        SCORELEVEL = j["ScoreLevel"]
 
         if len(APPKEY) and len(APPSECRET) and len(TOKEN):
-            print(u"--- 从config文件中读取参数成功 ---")
-            print(u"IOCs类型:{}".format(TYPE))
-            print(u"分值下限:{}".format(SCORELEVEL))
+            print("--- 从config文件中读取参数成功 ---")
+            print(("IOCs类型:{}".format(TYPE)))
+            print(("分值下限:{}".format(SCORELEVEL)))
         else:
-            print(u"config文件中必要参数缺失！")
+            print("config文件中必要参数缺失！")
             exit(0)
     except:
-        print(u"config文件中参数异常！")
+        print("config文件中参数异常！")
         exit(0)
 
 # 判断文件位置是否存在，若不存在则创建,用于存放下载下来的数据
 domainpath = 'archive'
 if not os.path.exists(domainpath):
     os.makedirs(domainpath)
-    print(domainpath + ' has been created!')
+    print((domainpath + ' has been created!'))
 
 # 指定获取的页码
 PAGENUM = ""
@@ -91,7 +99,7 @@ def json_csv(data,filename):
     """  将iocs的JSON数据转换为CSV """
     # global SCORELEVEL
     with open(filename, 'ab') as f:
-        dw = csv.DictWriter(f, [u'category', u'score', u'geo', u'value', u'type', u'source_ref', u'tag', u'timestamp'])
+        dw = csv.DictWriter(f, ['category', 'score', 'geo', 'value', 'type', 'source_ref', 'tag', 'timestamp'])
         if PAGENUM == "1":
             dw.writeheader()
         # dw.writeheader()
@@ -113,16 +121,16 @@ def apires(page):
         j=json.loads(res)
     except ValueError:
         if len(res):
-            print("Response: {}".format(res))
+            print(("Response: {}".format(res)))
         # print("Header: {}".format(res.header))
-            print(u"API请求失败，请检查config参数")
+            print("API请求失败，请检查config参数")
             sys.exit(0)
         else:
             print("云端无响应")
         return 0
     except Exception as e:
-        print(u"请求数据异常:{}".format(e))
-        print(u"Response: {}".format(res))
+        print(("请求数据异常:{}".format(e)))
+        print(("Response: {}".format(res)))
         #raise
         return 0
     json_csv(j["response_data"][0]['labels'],IOCS_CSVNAME)
@@ -132,26 +140,26 @@ def apires(page):
 def main():
     retry = 50
     global PAGENUM
-    print(u"--- 开始获取IOCs ---")
+    print("--- 开始获取IOCs ---")
     try:
         nextpage = apires(PAGENUM)
         while nextpage and retry > 0:
             PAGENUM = nextpage
-            print(u"Next Page is {}".format(nextpage))
+            print(("Next Page is {}".format(nextpage)))
             nextpage = apires(PAGENUM)
             if nextpage == 0:
-                print(u"无响应，5秒后再次尝试")
+                print("无响应，5秒后再次尝试")
                 time.sleep(5)
                 nextpage = PAGENUM
                 retry = retry - 1
         else:
             if nextpage == "":
-                print(u"That's All!")
+                print("That's All!")
             else:
                 if retry == 0:
-                    print(u"{}次重试耗尽，任务被迫结束".format(retry))
+                    print("50重试耗尽，任务被迫结束")
                 else:
-                    print(u"如果重试多次仍出现这样的提示，请联系support@tj-un.com解决")
+                    print("如果重试多次仍出现这样的提示，请联系support@tj-un.com解决")
     except Exception as e:
         print(e)
         return 0
