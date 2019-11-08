@@ -69,7 +69,7 @@ def _build_resource(uri="", body={}):
     resource.append(uri)
     if body:
         resource.append("?")
-        param_list = list(body.keys())
+        param_list = body.keys()
         param_list.sort()
         first = True
         for key in param_list:
@@ -88,7 +88,7 @@ def _build_resource(uri="", body={}):
 
 
 def convert_utf8(input_string):
-    if isinstance(input_string, str):
+    if isinstance(input_string, unicode):
         input_string = input_string.encode('utf-8')
     return input_string
 
@@ -97,7 +97,7 @@ def _format_header(headers={}):
     lf = '\n'
     temp_headers = []
     if len(headers) > 0:
-        header_list = list(headers.keys())
+        header_list = headers.keys()
         header_list.sort()
         signature_headers = []
         for k in header_list:

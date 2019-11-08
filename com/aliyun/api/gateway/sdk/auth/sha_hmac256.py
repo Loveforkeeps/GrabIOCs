@@ -24,8 +24,12 @@ import base64
 
 
 def sign(source, secret):
-    h = hmac.new(secret, source, hashlib.sha256)
+    secret = convert_utf8(secret)
+    h = hmac.new(secret, source.encode(), hashlib.sha256)
     signature = base64.encodestring(h.digest()).strip()
     return signature
 
-
+def convert_utf8(input_string):
+    if isinstance(input_string, str):
+        input_string = input_string.encode('utf-8')
+    return input_string

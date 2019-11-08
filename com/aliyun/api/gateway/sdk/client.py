@@ -18,12 +18,20 @@
 # coding=utf-8
 
 import json
+import sys
 from com.aliyun.api.gateway.sdk.util import UUIDUtil, DateUtil
 from com.aliyun.api.gateway.sdk.http.request import Request
-from com.aliyun.api.gateway.sdk.http.response import Response
 from com.aliyun.api.gateway.sdk.common import constant
 from com.aliyun.api.gateway.sdk.auth import md5_tool, signature_composer, sha_hmac256
 
+
+# Python版本识别
+if sys.version > '3':
+    PY3 = True
+    from com.aliyun.api.gateway.sdk.http.response import Response
+else:
+    PY3 = False
+    from com.aliyun.api.gateway.sdk.http.response_2 import Response
 
 class DefaultClient:
     def __init__(self, app_key=None, app_secret=None, time_out=None):

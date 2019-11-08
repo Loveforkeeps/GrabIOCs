@@ -19,6 +19,7 @@ else:
     PY3 = False
     reload(sys)
     sys.setdefaultencoding('utf-8')
+    print(u"---------------------当前环境为Python2,推荐使用Python3---------------------")
 
 # 获取时间戳
 timestamp1 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -38,7 +39,7 @@ def functime(func):
        local_time = datetime.datetime.now()
        func(*args, **kw)
        times = (datetime.datetime.now() - local_time).seconds
-       print('Run time is {} minutes {} seconds'.format(times/60,times%60))
+       print('Run time is {} minutes {} seconds'.format(times//60,times%60))
     return wap
 
 # 从config中获取参数
@@ -95,19 +96,30 @@ bodyMap["score_from"] = SCORELEVEL
 
 
 
+
 def json_csv(data,filename):
     """  将iocs的JSON数据转换为CSV """
-    # global SCORELEVEL
-    with open(filename, 'ab') as f:
-        dw = csv.DictWriter(f, ['category', 'score', 'geo', 'value', 'type', 'source_ref', 'tag', 'timestamp'])
+    with io.open(filename,'a',encoding='utf-8') as f:
+        header = ['category', 'score', 'geo', 'value', 'type', 'source_ref', 'tag', 'timestamp']
+        dw = csv.DictWriter(f, header)
         if PAGENUM == "1":
             dw.writeheader()
-        # dw.writeheader()
         for row in data:
-            # print(row)
             row.update(row['reputation'][0])
             row.pop('reputation')
-            # print(row)
+            dw.writerow(row)
+    return 0
+
+def json_csv_2(data,filename):
+    """  将iocs的JSON数据转换为CSV """
+    with io.open(filename,'ab') as f:
+        header = [u'category', u'score', u'geo', u'value', u'type', u'source_ref', u'tag', u'timestamp']
+        dw = csv.DictWriter(f, header)
+        if PAGENUM == "1":
+            dw.writeheader()
+        for row in data:
+            row.update(row['reputation'][0])
+            row.pop('reputation')
             dw.writerow(row)
     return 0
 
@@ -129,11 +141,15 @@ def apires(page):
             print("云端无响应")
         return 0
     except Exception as e:
-        print(("请求数据异常:{}".format(e)))
+        print(("获取数据异常:{}".format(e)))
         print(("Response: {}".format(res)))
-        #raise
+        raise
         return 0
-    json_csv(j["response_data"][0]['labels'],IOCS_CSVNAME)
+    if PY3:
+        json_csv(j["response_data"][0]['labels'],IOCS_CSVNAME)
+    else:
+        json_csv_2(j["response_data"][0]['labels'],IOCS_CSVNAME)
+
     return j["nextpage"]
     
 @functime
@@ -162,6 +178,7 @@ def main():
                     print("如果重试多次仍出现这样的提示，请联系support@tj-un.com解决")
     except Exception as e:
         print(e)
+        raise
         return 0
     except KeyboardInterrupt:
         print("\nUser Termined!")
