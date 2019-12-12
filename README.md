@@ -1,6 +1,8 @@
 #  RedQueen API2.0 Python 说明    
 ## 介绍   
-RedQueen API2.0 Python版客户端（初版）
+天际有盟 RedQueen API2.0 Python接口请求工具，支持Python2/3。
+
+Attention：本工具非官方版本，仅供参考。
 
 ## 使用说明：
 * config

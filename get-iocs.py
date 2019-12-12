@@ -105,9 +105,11 @@ def json_csv(data,filename):
         if PAGENUM == "1":
             dw.writeheader()
         for row in data:
-            row.update(row['reputation'][0])
-            row.pop('reputation')
-            dw.writerow(row)
+            _ = row.copy()
+            del(_['reputation'])
+            for rep in row['reputation']:
+                _.update(rep)
+                dw.writerow(_)
     return 0
 
 def json_csv_2(data,filename):
