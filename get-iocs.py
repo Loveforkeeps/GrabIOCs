@@ -10,7 +10,7 @@ import time
 import io
 import os
 import csv
-import importlib
+import argparse
 
 # Python版本识别
 if sys.version > '3':
@@ -21,10 +21,14 @@ else:
     sys.setdefaultencoding('utf-8')
     print(u"---------------------当前环境为Python2,推荐使用Python3---------------------")
 
+userparser = argparse.ArgumentParser(description='IOCs to CSV')
+userparser.add_argument('-c','--config',default='config',help=u'Specify the config file.')
+userparser.add_argument('-ssf',type=bool,default=False,help=u'Strict score filter.')
+userargs = userparser.parse_args()
+# print(userargs)
 # 获取时间戳
 timestamp1 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 print(timestamp1)
-
 
 # 获取系统日期
 datestamp = time.strftime("%Y-%m-%d",time.localtime(time.time()))
@@ -43,7 +47,7 @@ def functime(func):
     return wap
 
 # 从config中获取参数
-with io.open("config","r",encoding="utf8") as f:
+with io.open(userargs.config,"r",encoding="utf8") as f:
     try:
         j = json.load(f)
         APPKEY = str(j["Appkey"])
@@ -94,6 +98,10 @@ bodyMap["score_from"] = SCORELEVEL
 # bodyMap["limit"]
 # bodyMap["qurey"] = "reports"
 
+if SCORELEVEL:
+    SCORELEVEL = int(SCORELEVEL)
+else:
+    SCORELEVEL = 0
 
 
 
@@ -109,20 +117,30 @@ def json_csv(data,filename):
             del(_['reputation'])
             for rep in row['reputation']:
                 _.update(rep)
-                dw.writerow(_)
+                if userargs.ssf:
+                    if float(_.get('score',0.1)) > SCORELEVEL:
+                        dw.writerow(_)
+                else:
+                    dw.writerow(_)
     return 0
 
 def json_csv_2(data,filename):
-    """  将iocs的JSON数据转换为CSV """
+    """  将iocs的JSON数据转换为CSV 适用于python2环境 """
     with io.open(filename,'ab') as f:
         header = [u'category', u'score', u'geo', u'value', u'type', u'source_ref', u'tag', u'timestamp']
         dw = csv.DictWriter(f, header)
         if PAGENUM == "1":
             dw.writeheader()
         for row in data:
-            row.update(row['reputation'][0])
-            row.pop('reputation')
-            dw.writerow(row)
+            _ = row.copy()
+            del(_['reputation'])
+            for rep in row['reputation']:
+                _.update(rep)
+                if userargs.ssf:
+                    if float(_.get('score',0.1)) > SCORELEVEL:
+                        dw.writerow(_)
+                else:
+                    dw.writerow(_)
     return 0
 
 def apires(page):
@@ -132,7 +150,9 @@ def apires(page):
     res = cli.execute(req_post)
 
     try:
+        res = res.decode('UTF-8','strict')
         j=json.loads(res)
+        assert j['response_status']['code'] == 1
     except ValueError:
         if len(res):
             print(("Response: {}".format(res)))
@@ -186,4 +206,5 @@ def main():
         print("\nUser Termined!")
 
 if __name__ == '__main__':
+
     main()

@@ -31,11 +31,25 @@
     * 逐页获取IOCs数据，保存在archive文件夹中
     * 支持断页续传,当从某页中断时，可将下页页码，作为参数，继续下载，最后获得的文件依旧完整
     * 一次IOCs数据同步约耗时40min
-
-    * 使用示例：
-
+* 使用示例：
+    
+```shell
+    $ python  get-iocs.py -h
+    usage: get-iocs.py [-h] [-c CONFIG] [-ssf SSF]
+    
+    IOCs to CSV
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -c CONFIG, --config CONFIG
+                            Specify the config file.
+      -ssf SSF              Strict score filter.  （严格分数过滤，不保存没达到分数的同值关联IOC）
+    ```
+    
+    
+    
     ```shell
-    python get-iocs.py
+$ python get-iocs.py
     输出：
     从config文件中读取参数成功
     Next Page is 2
@@ -49,9 +63,10 @@
     Next Page is 212
     That's All!
     ```
-
-    ```
-    python get-iocs.py 134
+    
+    ```shell
+    # 断页续传
+    $ python get-iocs.py 134
     输出：
     从config文件中读取参数成功
     Next Page is 134
@@ -64,9 +79,15 @@
     That's All!
     
     ```
-
-
+    
+    ```shell
+    # 严格分数过滤，不保存没达到分数的同值关联IOC
+    $ python get-iocs.py -ssf true
+    ```
+    
+    
 
 #### ToDo:
 
 2019-04-26: 修改com.aliyun.api.gateway.sdk.client.DefaultClient.execute()，增加状态码检测，获取Header中的错误信息返回
+
