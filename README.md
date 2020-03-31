@@ -2,7 +2,7 @@
 
 ## 介绍
 
-天际有盟 RedQueen API2.0 Python接口请求工具，支持Python2/3。
+天际友盟 RedQueen API2.0 Python接口请求工具，支持Python2/3。
 
 **Attention：** 本工具非官方版本，仅供参考。
 
