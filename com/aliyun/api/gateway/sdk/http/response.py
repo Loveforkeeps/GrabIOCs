@@ -9,6 +9,19 @@ from com.aliyun.api.gateway.sdk.http.request import Request
 import http.client
 import urllib.request, urllib.parse, urllib.error
 
+import ssl
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
+
+
+DEBUG = True
+PROXY = ('127.0.0.1', '8080')
+
+
 class Response(Request):
     def __init__(self, host=None, url=None, method=constant.GET, headers={}, protocol=constant.HTTP, content_type=None, content=None, port=None,
                  key_file=None, cert_file=None, time_out=None):
@@ -82,11 +95,12 @@ class Response(Request):
         finally:
             self.__close_connection()
 
-    def get_https_response(self):
+    def get_https_response_unproxy(self):
         if self.__port is None or self.__port == "":
             self.__port = 443
         try:
             self.__port = 443
+            
             self.__connection = http.client.HTTPSConnection(self.parse_host(), self.__port,
                                                         cert_file=self.__cert_file,
                                                         key_file=self.__key_file)
@@ -94,14 +108,43 @@ class Response(Request):
             
             self.__connection.connect()
          
-            
             self.__connection.request(method=self.get_method(), url=self.get_url(), body=urllib.parse.urlencode(self.get_body()),
                                       headers=self.get_headers())
             response = self.__connection.getresponse()
-         
+
             return  response.read()
         except Exception as e:
-            print(e)  
+            print(e)
+            return None, None, None
+        finally:
+            self.__close_connection()
+
+    def get_https_response(self):
+        if self.__port is None or self.__port == "":
+            self.__port = 443
+        try:
+            self.__port = 443
+
+            if DEBUG:
+                self.__connection = http.client.HTTPSConnection(*PROXY,
+                                                            cert_file=self.__cert_file,
+                                                            key_file=self.__key_file)
+                self.__connection.set_tunnel(host=self.parse_host(),port=self.__port)
+            else:
+                self.__connection = http.client.HTTPSConnection(self.parse_host(), self.__port,
+                                                            cert_file=self.__cert_file,
+                                                            key_file=self.__key_file)
+
+            self.__connection.connect()
+         
+            self.__connection.request(method=self.get_method(), url=self.get_url(), body=urllib.parse.urlencode(self.get_body()),
+                                      headers=self.get_headers())
+            response = self.__connection.getresponse()
+
+            return  response.read()
+
+        except Exception as e:
+            print(e)
             return None, None, None
         finally:
             self.__close_connection()
