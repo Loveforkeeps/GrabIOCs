@@ -7,6 +7,7 @@ import datetime
 import json
 import sys
 import time
+from time import sleep
 import io
 import os
 import csv
@@ -105,6 +106,26 @@ else:
 
 
 
+def retry(*exceptions, retries=3, cooldown=1, verbose=True):
+    # 函数异常捕获重试装饰器
+    def decorator(func):
+        def wap(*args, **kw):
+            for i in range(retries):
+                try:
+                    res = func(*args, **kw)
+                except exceptions as err:
+                    message = "Exception during {} execution. " \
+                                "{} of {} retries attempted".format(locals(), i+1, retries)
+                    verbose and print(message) and False
+                    if cooldown:
+                        import time
+                        time.sleep(cooldown)
+                else:
+                    return res
+
+        return wap
+    return decorator
+
 def json_csv(data,filename):
     """  将iocs的JSON数据转换为CSV """
     with io.open(filename,'a',encoding='utf-8') as f:
@@ -143,6 +164,7 @@ def json_csv_2(data,filename):
                     dw.writerow(_)
     return 0
 
+@retry(AttributeError,3,10)
 def apires(page):
     bodyMap["page"] = page
     req_post.set_body(bodyMap)
