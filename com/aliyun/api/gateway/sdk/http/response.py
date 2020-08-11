@@ -18,8 +18,8 @@ else:
     ssl._create_default_https_context = _create_unverified_https_context
 
 
-DEBUG = True
-PROXY = ('127.0.0.1', '8080')
+DEBUG = constant.DEBUG
+PROXY = constant.PROXY
 
 
 class Response(Request):

@@ -38,5 +38,6 @@ BODY_TYPE = (
     'FORM', 'STREAM'
 )
 
+DEBUG = False
 
-
+PROXY = ('127.0.0.1', '8080')
